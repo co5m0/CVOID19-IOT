@@ -1,0 +1,87 @@
+version: "3.9"
+
+services:
+  nuclio:
+    image: nuclio/dashboard:stable-amd64
+    volumes:
+      - /tmp:/tmp
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8070:8070
+  rabbitMQ:
+    image: cyrilix/rabbitmq-mqtt
+    ports:
+      - 9000:15672
+      - 1883:1883
+      - 5672:5672
+      - 4369:4369
+      - 5671:5671
+      - 25672:25672
+      - 15671:15671
+      - 61613:61613
+    healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 30s
+        timeout: 10s
+        retries: 5
+  entermicroservice:
+    build:
+      context: ./Microservices/EnterService
+      dockerfile: Dockerfile
+    image: co5mo/cvoid-enter-microservice
+    depends_on:
+      - rabbitMQ
+      - nuclio
+    links:
+      - rabbitMQ
+      - nuclio
+    profiles:
+      - microservices
+    restart: on-failure
+    env_file:
+      ./Microservices/EnterService/.env
+    volumes:
+      - $PWD/Microservices/EnterService/dist:/home
+  exitmicroservice:
+    build:
+      context: ./Microservices/ExitService
+      dockerfile: Dockerfile
+    image: co5mo/cvoid-exit-microservice
+    depends_on:
+      - rabbitMQ
+      - nuclio
+    links:
+      - rabbitMQ
+      - nuclio
+    profiles:
+      - microservices
+    restart: on-failure
+    env_file:
+      ./Microservices/ExitService/.env
+    volumes:
+      - $PWD/Microservices/ExitService/dist:/home
+  tablemicroservice:
+    build:
+      context: ./Microservices/TableService
+      dockerfile: Dockerfile
+    image: co5mo/cvoid-table-microservice
+    depends_on:
+      - rabbitMQ
+      - nuclio
+    links:
+      - rabbitMQ
+      - nuclio
+    profiles:
+      - microservices
+    restart: on-failure
+    env_file:
+      ./Microservices/TableService/.env
+    volumes:
+      - $PWD/Microservices/TableService/dist:/home
+  webapp:
+    build:
+      context: ./WebApp
+      dockerfile: Dockerfile
+    image: co5mo/cvoid-webapp
+    ports:
+      - 3000:3000

@@ -1,0 +1,5 @@
+.env
+dist/cvoid19.json
+dist/sqlite.db
+!dist/*.dist
+src/main

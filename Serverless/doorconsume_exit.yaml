@@ -1,0 +1,41 @@
+metadata:
+  name: doorconsume_exit
+  labels:
+    nuclio.io/project-name: 2e65d46a-62ff-4a2a-b2b7-e2ed80f8cd2a
+spec:
+  handler: "main:Handler"
+  runtime: golang
+  env:
+    - name: RabbitMQURL
+      value: "amqp://guest:guest@192.168.68.112:5672"
+    - name: RabbitMQEnterQ
+      value: iot/rmq/exit
+    - name: Door
+      value: exit
+  resources: {}
+  image: "nuclio/processor-doorconsume_exit:latest"
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPU: 75
+  triggers:
+    "mqtt trigger":
+      class: ""
+      kind: mqtt
+      url: "guest:guest@192.168.68.112:1883"
+      username: guest
+      password: guest
+      attributes:
+        subscriptions:
+          - qos: 0
+            topic: iot/sensors/doors/exit
+  build:
+    image: ""
+    noCache: false
+    offline: false
+    dependencies: []
+    runtimeAttributes:
+      repositories: []
+    functionSourceCode: Ly8gVGhpcyBmdW5jdGlvbiByZWFkIHRoZSB2YWx1ZXMgcG9zdGVkIG9uIGEgbXF0dCBxdWV1ZS4KLy8gVGhlbiBkZWZpbmUgYW4gQU1RUCBxdWV1ZSBhbmQgcG9zdCB0aGVyZSB0aGUgbWVzc2FnZSByZWNlaXZlZAovLyB3aXRoIGFkZGl0aW9uYWwgaW5mby4KCi8vIE1RVFQgSlNPTiBtZXNzYWdlIHN0cnVjdHVyZToKLy8gewovLyAgICAic3RhdHVzIjoib3Blbi9jbG9zZSIKLy8gfQovLyAKLy8gQU1RUCBKU09OIG1lc3NhZ2Ugc3RydWN0dXJlOgovLyB7Ci8vICAgICAgImRvb3IiOiJlbnRlci9leGl0IiwKLy8gICAgICAic3RhdHVzIjoib3Blbi9jbG9zZSIsCi8vICAgICAgInRpbWVzdGFtcCI6Inh4eHh4eHh4eHh4eHgiCi8vIH0KLy8KLy8gRU5WIHZhcnM6Ci8vICBSYWJiaXRNUVVSTDogcmFiYml0bXEgZW5kcG9pbnQgYW1xcDovL3VzZXJuYW1lOnBhc3N3b3JkQGVuZHBvaW50OnBvcnQgZWcuIGFtcXA6Ly9ndWVzdDpndWVzdEAxOTIuMTY4LjY4LjExMjo1NjcyCi8vICBSYWJiaXRNUUVudGVyUTogYW1xcCBxdWV1ZSBuYW1lIGVnLiBpb3Qvcm1xL2VudGVyCi8vCgpwYWNrYWdlIG1haW4KCmltcG9ydCAoCgkiZW5jb2RpbmcvanNvbiIKCSJmbXQiCgkib3MiCiAgICAic3RyY29udiIKCSJ0aW1lIgoKCSJnaXRodWIuY29tL251Y2xpby9udWNsaW8tc2RrLWdvIgoJImdpdGh1Yi5jb20vc3RyZWFkd2F5L2FtcXAiCikKCnR5cGUgbXF0dGRvb3Jtc2cgc3RydWN0IHsKCVN0YXR1cyBzdHJpbmcgYGpzb246InN0YXR1cyJgCn0KCnR5cGUgRG9vck1RIHN0cnVjdCB7CglEb29yICAgICAgc3RyaW5nIGBqc29uOiJkb29yImAKCVN0YXR1cyAgICBzdHJpbmcgYGpzb246InN0YXR1cyJgCglUaW1lc3RhbXAgc3RyaW5nIGBqc29uOiJ0aW1lc3RhbXAiYAp9CgpmdW5jIEhhbmRsZXIoY29udGV4dCAqbnVjbGlvLkNvbnRleHQsIGV2ZW50IG51Y2xpby5FdmVudCkgKGludGVyZmFjZXt9LCBlcnJvcikgewoJZm10LlByaW50bG4oIlN0YXJ0aW5nIEdvIGFwcGxpY2F0aW9uIiwgb3MuR2V0ZW52KCJSYWJiaXRNUUVudGVyUSIpKQoKCW1zZyA6PSAmbXF0dGRvb3Jtc2d7fQoJanNvbi5Vbm1hcnNoYWwoW11ieXRlKGV2ZW50LkdldEJvZHkoKSksIG1zZykKCWNvbm4sIGVyciA6PSBhbXFwLkRpYWwob3MuR2V0ZW52KCJSYWJiaXRNUVVSTCIpKQoKCWlmIGVyciAhPSBuaWwgewoJCXBhbmljKGVycikKCX0KCWRlZmVyIGNvbm4uQ2xvc2UoKQoKCWZtdC5QcmludGxuKCJTdWNjZXNzZnVsbHkgQ29ubmVjdGVkIHRvIFJhYmJpdE1RIikKCgljaCwgZXJyIDo9IGNvbm4uQ2hhbm5lbCgpCgoJaWYgZXJyICE9IG5pbCB7CgkJcGFuaWMoZXJyKQoJfQoJZGVmZXIgY2guQ2xvc2UoKQoKCXEsIGVyciA6PSBjaC5RdWV1ZURlY2xhcmUoCgkJb3MuR2V0ZW52KCJSYWJiaXRNUUVudGVyUSIpLAoJCWZhbHNlLAoJCWZhbHNlLAoJCWZhbHNlLAoJCWZhbHNlLAoJCW5pbCwKCSkKCglpZiBlcnIgIT0gbmlsIHsKCQlwYW5pYyhlcnIpCgl9CgoJZm10LlByaW50ZigiUHJpbnRpbmcgcXVldWUgaW5mbyAlc1xuIiwgcSkKCWZtdC5QcmludGYoIk1FU1NBR0UgJXNcbiIsIG1zZy5TdGF0dXMpCgogICAgbXNnanNvbmVuYywgZXJyIDo9IGpzb24uTWFyc2hhbChEb29yTVF7CgkJCQlEb29yOiAgICAgIG9zLkdldGVudigiRG9vciIpLAoJCQkJU3RhdHVzOiAgICBtc2cuU3RhdHVzLAoJCQkJVGltZXN0YW1wOiBzdHJjb252Lkl0b2EoaW50KHRpbWUuTm93KCkuVW5peE5hbm8oKSAvIGludDY0KHRpbWUuTWlsbGlzZWNvbmQpKSksCgl9KQogICAgCiAgICBpZiBlcnIgIT0gbmlsIHsKCQlwYW5pYyhlcnIpCgl9CiAgICAKCS8vIHB1Ymxpc2ggbWVzc2FnZQoJZXJyID0gY2guUHVibGlzaCgKCQkiIiwKCQlvcy5HZXRlbnYoIlJhYmJpdE1RRW50ZXJRIiksCgkJZmFsc2UsCgkJZmFsc2UsCgkJYW1xcC5QdWJsaXNoaW5newoJCQlDb250ZW50VHlwZTogImFwcGxpY2F0aW9uL2pzb24iLAoJCQlCb2R5Om1zZ2pzb25lbmMsCgkJfSwKCSkKCglpZiBlcnIgIT0gbmlsIHsKCQlwYW5pYyhlcnIpCgl9CgoJZm10LlByaW50bG4oIlN1Y2Nlc3NmdWxseSBQdWJsaXNoZWQgdG8gUmFiYml0TVEiKQoJcmV0dXJuIG5pbCwgbmlsCn0KCg==
+    codeEntryType: sourceCode
+  platform: {}
+  readinessTimeoutSeconds: 60
