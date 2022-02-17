@@ -106,7 +106,7 @@ func main() {
 	}
 
 	// As an admin, the app has access to read and write all data, regradless of Security Rules
-	ref := client.NewRef("cvoid-bar/door-exit")
+	ref := client.NewRef("cvoid-bar/tables")
 
 	// go chan
 	forever := make(chan bool)
