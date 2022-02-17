@@ -5,13 +5,15 @@
 // MQTT JSON message structure:
 // {
 //    "status":"open/close",
-//    "table":"1/2/3/4..."
+//    "table":"1/2/3/4...",
+//    "seat":"1.1/1.3/3..."
 // }
 // 
 // AMQP JSON message structure:
 // {
 //      "table":"1/2/3/4..."
 //      "status":"open/close",
+//    	"seat":"1.1/1.3/3..."
 //      "timestamp":"xxxxxxxxxxxxx"
 // }
 //
@@ -26,7 +28,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-    "strconv"
+	"strconv"
 	"time"
 
 	"github.com/nuclio/nuclio-sdk-go"
@@ -35,12 +37,14 @@ import (
 
 type mqttdoormsg struct {
 	Status string `json:"status"`
-    Table  string `json:"table`
+	Table  string `json:"table`
+	Seat   string `json:"seat"`
 }
 
 type DoorMQ struct {
 	Table     string `json:"table"`
 	Status    string `json:"status"`
+	Seat   	  string `json:"seat"`
 	Timestamp string `json:"timestamp"`
 }
 
@@ -48,7 +52,7 @@ func Handler(context *nuclio.Context, event nuclio.Event) (interface{}, error) {
 	fmt.Println("Starting Go application")
 
 	msg := &mqttdoormsg{}
-	json.Unmarshal([]byte(event.GetBody()), msg)
+	json.Unmarshal(event.GetBody(), msg)
 	conn, err := amqp.Dial(os.Getenv("RabbitMQURL"))
 
 	if err != nil {
@@ -84,6 +88,7 @@ func Handler(context *nuclio.Context, event nuclio.Event) (interface{}, error) {
     msgjsonenc, err := json.Marshal(DoorMQ{
 				Table:     msg.Table,
 				Status:    msg.Status,
+				Seat:	   msg.Seat,
 				Timestamp: strconv.Itoa(int(time.Now().UnixNano() / int64(time.Millisecond))),
 	})
     
