@@ -88,7 +88,7 @@ func main() {
 	// Initialize the app with a custom auth variable, limiting the server's access
 	ao := map[string]interface{}{"uid": os.Getenv("UID")}
 	conf := &firebase.Config{
-		DatabaseURL:  os.Getenv("FIREBASEDATABASEURL"),,
+		DatabaseURL:  os.Getenv("FIREBASEDATABASEURL"),
 		AuthOverride: &ao,
 	}
 	// Fetch the service account key JSON file contents
